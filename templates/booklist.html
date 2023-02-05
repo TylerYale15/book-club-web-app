@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %} Book List {% endblock %}
+
+{% block content %}
+<h1 class="text-center">Book List</h1>
+<!-- Table headers for book list -->
+<div class="container">
+    <div class="row">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Pages</th>
+                    <th scope="col">Year</th>
+                    <th scope="col" class="text-center">Link</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <!-- Autofilled book list from DB -->
+                <tr>
+                    <td>{{ row.title }}</td>
+                    <td>{{ row.author }}</td>
+                    <td>{{ row.pages }}</td>
+                    <td>{{ row.year}}</td>
+                    <td align="center"><a href="{{ row.link }}" target="_blank"><button type="button"
+                                class="btn btn-primary btn-sm"><i
+                                    class="fa-solid fa-up-right-from-square"></i></button></a>
+                    </td>
+                    <td align="center">
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editModal" data-title="{{ row.title }}" data-author="{{ row.author }}"
+                            data-pages="{{ row.pages }}" data-year="{{row.year }}" data-link="{{ row.link }}"
+                            data-id="{{ row.id }}"><i class="fas fa-edit"></i></button>
+                        <a href={{ url_for('deleteBook', DBid=row.id) }}><button type="button"
+                                class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#addModal"
+            class="btn btn-secondary btn-lg btn-block">Add New Book</button>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Entry</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editBook" action="/editBook" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title" class="col-form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="author" class="col-form-label">Author</label>
+                        <input type="text" class="form-control" id="author" name="author">
+                    </div>
+                    <div class="form-group">
+                        <label for="pages" class="col-form-label">Pages</label>
+                        <input type="text" class="form-control" id="pages" name="pages">
+                    </div>
+                    <div class="form-group">
+                        <label for="year" class="col-form-label">Year</label>
+                        <input type="text" class="form-control" id="year" name="year">
+                    </div>
+                    <div class="form-group">
+                        <label for="link" class="col-form-label">Link</label>
+                        <input type="text" class="form-control" id="link" name="link">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" id="id" name="id">
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href={{ url_for('editBookModal') }}><button form="editBook" type="submit"
+                        class="btn btn-primary">Save
+                        Changes</button></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Book</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="addBook" action="/addBook" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title" class="col-form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="author" class="col-form-label">Author</label>
+                        <input type="text" class="form-control" id="author" name="author">
+                    </div>
+                    <div class="form-group">
+                        <label for="pages" class="col-form-label">Pages</label>
+                        <input type="text" class="form-control" id="pages" name="pages">
+                    </div>
+                    <div class="form-group">
+                        <label for="year" class="col-form-label">Year</label>
+                        <input type="text" class="form-control" id="year" name="year">
+                    </div>
+                    <div class="form-group">
+                        <label for="link" class="col-form-label">Link</label>
+                        <input type="text" class="form-control" id="link" name="link">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href={{ url_for('addBookModal') }}><button form="addBook" type="submit"
+                            class="btn btn-primary">Add</button></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<script>
+    // Script for autofill edit modal
+    $(document).ready(function () {
+        $('#editModal').on('show.bs.modal', function (event) {
+            console.log("it going")
+            let button = $(event.relatedTarget) // Button that triggered the modal
+            let title = button.data('title')
+            let author = button.data('author')
+            let pages = button.data('pages')
+            let year = button.data('year')
+            let link = button.data('link')
+            let id = button.data('id')
+
+            let modal = $(this)
+            modal.find('#title').val(title)
+            modal.find('#author').val(author)
+            modal.find('#pages').val(pages)
+            modal.find('#year').val(year)
+            modal.find('#link').val(link)
+            modal.find('#id').val(id)
+        })
+    });
+</script>
+
+{% endblock %}
